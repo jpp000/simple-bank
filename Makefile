@@ -16,4 +16,7 @@ migratedown:
 create_migration:
 	migrate create -ext=sql -dir=db/migration -seq $(name)
 
-.PHONY: postgres createdb dropdb migrateup migratedown create_migration
+sqlc:
+	sqlc generate
+
+.PHONY: postgres createdb dropdb migrateup migratedown create_migration sqlc
