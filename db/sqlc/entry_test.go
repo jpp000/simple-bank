@@ -51,7 +51,7 @@ func TestGetEntry(t *testing.T) {
 	require.WithinDuration(t, entry1.CreatedAt, entry2.CreatedAt, time.Second)
 }
 
-func TestListEntry(t *testing.T) {
+func TestListEntries(t *testing.T) {
 	account := createRandomAccount(t)
 
 	for i := 0; i < 10; i++ {
@@ -70,5 +70,6 @@ func TestListEntry(t *testing.T) {
 
 	for _, entry := range entries {
 		require.NotEmpty(t, entry)
+		require.Equal(t, arg.AccountID, entry.AccountID)
 	}
 }
