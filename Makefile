@@ -22,4 +22,7 @@ sqlc:
 test:
 	CGO_ENABLED=0 go test -v -cover ./...
 
-.PHONY: postgres createdb dropdb migrateup migratedown create_migration sqlc test
+server:
+	CGO_ENABLED=0 go run main.go
+
+.PHONY: postgres createdb dropdb migrateup migratedown create_migration sqlc test server
