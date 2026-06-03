@@ -15,7 +15,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestGetAccount(t *testing.T) {
+func TestGetAccountAPI(t *testing.T) {
+	account := randomAccount()
+
 	testCases := []struct {
 		name         string
 		accountID    int64
@@ -24,23 +26,21 @@ func TestGetAccount(t *testing.T) {
 	}{
 		{
 			name:      "OK",
-			accountID: 1,
+			accountID: account.ID,
 			buildStubs: func(store *mockdb.MockStore) {
-				const id int64 = 1
 				store.EXPECT().
-					GetAccount(gomock.Any(), gomock.Eq(id)).
-					Return(randomAccount(id), nil).
+					GetAccount(gomock.Any(), gomock.Eq(account.ID)).
+					Return(account, nil).
 					Times(1)
 			},
 			expectStatus: http.StatusOK,
 		},
 		{
 			name:      "NotFound",
-			accountID: 2,
+			accountID: account.ID,
 			buildStubs: func(store *mockdb.MockStore) {
-				const id int64 = 2
 				store.EXPECT().
-					GetAccount(gomock.Any(), gomock.Eq(id)).
+					GetAccount(gomock.Any(), gomock.Eq(account.ID)).
 					Return(db.Account{}, sql.ErrNoRows).
 					Times(1)
 			},
@@ -48,18 +48,17 @@ func TestGetAccount(t *testing.T) {
 		},
 		{
 			name:      "InternalError",
-			accountID: 3,
+			accountID: account.ID,
 			buildStubs: func(store *mockdb.MockStore) {
-				const id int64 = 3
 				store.EXPECT().
-					GetAccount(gomock.Any(), gomock.Eq(id)).
+					GetAccount(gomock.Any(), gomock.Eq(account.ID)).
 					Return(db.Account{}, sql.ErrConnDone).
 					Times(1)
 			},
 			expectStatus: http.StatusInternalServerError,
 		},
 		{
-			name:      "BadRequest",
+			name:      "InvalidID",
 			accountID: 0,
 			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
@@ -92,9 +91,9 @@ func TestGetAccount(t *testing.T) {
 	}
 }
 
-func randomAccount(id int64) db.Account {
+func randomAccount() db.Account {
 	return db.Account{
-		ID:        id,
+		ID:        util.RandomInt(1, 1000),
 		Owner:     util.RandomOwner(),
 		Balance:   util.RandomMoney(),
 		Currency:  util.RandomCurrency(),
