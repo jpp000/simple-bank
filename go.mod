@@ -9,4 +9,5 @@ require (
 	github.com/lib/pq v1.8.0
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.6.1
+	golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9
 )
